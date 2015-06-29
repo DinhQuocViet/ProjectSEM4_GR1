@@ -6,13 +6,13 @@ package Controller;
 
 import Controller.exceptions.NonexistentEntityException;
 import Controller.exceptions.PreexistingEntityException;
-import Entity.BookingTour;
+import Model.BookingTour;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import Entity.Users;
+import Model.Users;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -44,7 +44,7 @@ public class BookingTourJpaController implements Serializable {
             }
             em.persist(bookingTour);
             if (UId != null) {
-                UId.getBookingTourList().add(bookingTour);
+                UId.getBookingTourCollection().add(bookingTour);
                 UId = em.merge(UId);
             }
             em.getTransaction().commit();
@@ -74,11 +74,11 @@ public class BookingTourJpaController implements Serializable {
             }
             bookingTour = em.merge(bookingTour);
             if (UIdOld != null && !UIdOld.equals(UIdNew)) {
-                UIdOld.getBookingTourList().remove(bookingTour);
+                UIdOld.getBookingTourCollection().remove(bookingTour);
                 UIdOld = em.merge(UIdOld);
             }
             if (UIdNew != null && !UIdNew.equals(UIdOld)) {
-                UIdNew.getBookingTourList().add(bookingTour);
+                UIdNew.getBookingTourCollection().add(bookingTour);
                 UIdNew = em.merge(UIdNew);
             }
             em.getTransaction().commit();
@@ -112,7 +112,7 @@ public class BookingTourJpaController implements Serializable {
             }
             Users UId = bookingTour.getUId();
             if (UId != null) {
-                UId.getBookingTourList().remove(bookingTour);
+                UId.getBookingTourCollection().remove(bookingTour);
                 UId = em.merge(UId);
             }
             em.remove(bookingTour);

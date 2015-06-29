@@ -10,6 +10,14 @@
     <class>Entity.TourType</class>
     <class>Entity.BookingTour</class>
     <class>Entity.Users</class>
+    <class>Model.BookingTour</class>
+    <class>Model.PackageTour</class>
+    <class>Model.Users</class>
+    <class>Model.Placesvisit</class>
+    <class>Model.Rentcar</class>
+    <class>Model.CarforRent</class>
+    <class>Model.TourType</class>
+    <class>Model.UserRole</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://localhost\SQLEXPRESS:1433;databaseName=E2W"/>

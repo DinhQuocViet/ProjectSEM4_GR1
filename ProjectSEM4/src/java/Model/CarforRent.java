@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Entity;
+package Model;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,23 +37,23 @@ public class CarforRent implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "C_ID")
+    @Column(name = "C_ID", nullable = false)
     private Integer cId;
-    @Column(name = "C_Name")
+    @Column(name = "C_Name", length = 50)
     private String cName;
-    @Column(name = "C_Model")
+    @Column(name = "C_Model", length = 50)
     private String cModel;
-    @Column(name = "C_Type")
+    @Column(name = "C_Type", length = 50)
     private String cType;
     @Column(name = "C_Seating")
     private Integer cSeating;
     @Column(name = "C_Airconditioner")
     private Boolean cAirconditioner;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "C_Price")
+    @Column(name = "C_Price", precision = 53)
     private Double cPrice;
     @OneToMany(mappedBy = "cId")
-    private List<Rentcar> rentcarList;
+    private Collection<Rentcar> rentcarCollection;
 
     public CarforRent() {
     }
@@ -119,12 +119,12 @@ public class CarforRent implements Serializable {
     }
 
     @XmlTransient
-    public List<Rentcar> getRentcarList() {
-        return rentcarList;
+    public Collection<Rentcar> getRentcarCollection() {
+        return rentcarCollection;
     }
 
-    public void setRentcarList(List<Rentcar> rentcarList) {
-        this.rentcarList = rentcarList;
+    public void setRentcarCollection(Collection<Rentcar> rentcarCollection) {
+        this.rentcarCollection = rentcarCollection;
     }
 
     @Override
@@ -149,7 +149,7 @@ public class CarforRent implements Serializable {
 
     @Override
     public String toString() {
-        return "Entity.CarforRent[ cId=" + cId + " ]";
+        return "Model.CarforRent[ cId=" + cId + " ]";
     }
     
 }

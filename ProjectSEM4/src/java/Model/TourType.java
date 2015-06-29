@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Entity;
+package Model;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,12 +32,12 @@ public class TourType implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "T_ID")
+    @Column(name = "T_ID", nullable = false)
     private Integer tId;
-    @Column(name = "T_type")
+    @Column(name = "T_type", length = 50)
     private String ttype;
     @OneToMany(mappedBy = "pType")
-    private List<PackageTour> packageTourList;
+    private Collection<PackageTour> packageTourCollection;
 
     public TourType() {
     }
@@ -63,12 +63,12 @@ public class TourType implements Serializable {
     }
 
     @XmlTransient
-    public List<PackageTour> getPackageTourList() {
-        return packageTourList;
+    public Collection<PackageTour> getPackageTourCollection() {
+        return packageTourCollection;
     }
 
-    public void setPackageTourList(List<PackageTour> packageTourList) {
-        this.packageTourList = packageTourList;
+    public void setPackageTourCollection(Collection<PackageTour> packageTourCollection) {
+        this.packageTourCollection = packageTourCollection;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class TourType implements Serializable {
 
     @Override
     public String toString() {
-        return "Entity.TourType[ tId=" + tId + " ]";
+        return "Model.TourType[ tId=" + tId + " ]";
     }
     
 }

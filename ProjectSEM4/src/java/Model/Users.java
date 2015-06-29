@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Entity;
+package Model;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,19 +40,19 @@ public class Users implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "U_ID")
+    @Column(name = "U_ID", nullable = false)
     private Integer uId;
-    @Column(name = "U_username")
+    @Column(name = "U_username", length = 50)
     private String uusername;
-    @Column(name = "U_password")
+    @Column(name = "U_password", length = 50)
     private String upassword;
-    @Column(name = "U_name")
+    @Column(name = "U_name", length = 50)
     private String uname;
     @Column(name = "U_Sex")
     private Boolean uSex;
-    @Column(name = "U_Address")
+    @Column(name = "U_Address", length = 2147483647)
     private String uAddress;
-    @Column(name = "U_Email")
+    @Column(name = "U_Email", length = 100)
     private String uEmail;
     @Column(name = "U_Phonenumber")
     private Integer uPhonenumber;
@@ -60,9 +60,9 @@ public class Users implements Serializable {
     @ManyToOne
     private UserRole uRole;
     @OneToMany(mappedBy = "uId")
-    private List<BookingTour> bookingTourList;
+    private Collection<BookingTour> bookingTourCollection;
     @OneToMany(mappedBy = "uId")
-    private List<Rentcar> rentcarList;
+    private Collection<Rentcar> rentcarCollection;
 
     public Users() {
     }
@@ -144,21 +144,21 @@ public class Users implements Serializable {
     }
 
     @XmlTransient
-    public List<BookingTour> getBookingTourList() {
-        return bookingTourList;
+    public Collection<BookingTour> getBookingTourCollection() {
+        return bookingTourCollection;
     }
 
-    public void setBookingTourList(List<BookingTour> bookingTourList) {
-        this.bookingTourList = bookingTourList;
+    public void setBookingTourCollection(Collection<BookingTour> bookingTourCollection) {
+        this.bookingTourCollection = bookingTourCollection;
     }
 
     @XmlTransient
-    public List<Rentcar> getRentcarList() {
-        return rentcarList;
+    public Collection<Rentcar> getRentcarCollection() {
+        return rentcarCollection;
     }
 
-    public void setRentcarList(List<Rentcar> rentcarList) {
-        this.rentcarList = rentcarList;
+    public void setRentcarCollection(Collection<Rentcar> rentcarCollection) {
+        this.rentcarCollection = rentcarCollection;
     }
 
     @Override
@@ -183,7 +183,7 @@ public class Users implements Serializable {
 
     @Override
     public String toString() {
-        return "Entity.Users[ uId=" + uId + " ]";
+        return "Model.Users[ uId=" + uId + " ]";
     }
     
 }

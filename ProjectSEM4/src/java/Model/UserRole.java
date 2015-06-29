@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Entity;
+package Model;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,12 +32,12 @@ public class UserRole implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "UR_ID")
+    @Column(name = "UR_ID", nullable = false)
     private Integer urId;
-    @Column(name = "UR_Name")
+    @Column(name = "UR_Name", length = 50)
     private String uRName;
     @OneToMany(mappedBy = "uRole")
-    private List<Users> usersList;
+    private Collection<Users> usersCollection;
 
     public UserRole() {
     }
@@ -63,12 +63,12 @@ public class UserRole implements Serializable {
     }
 
     @XmlTransient
-    public List<Users> getUsersList() {
-        return usersList;
+    public Collection<Users> getUsersCollection() {
+        return usersCollection;
     }
 
-    public void setUsersList(List<Users> usersList) {
-        this.usersList = usersList;
+    public void setUsersCollection(Collection<Users> usersCollection) {
+        this.usersCollection = usersCollection;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class UserRole implements Serializable {
 
     @Override
     public String toString() {
-        return "Entity.UserRole[ urId=" + urId + " ]";
+        return "Model.UserRole[ urId=" + urId + " ]";
     }
     
 }

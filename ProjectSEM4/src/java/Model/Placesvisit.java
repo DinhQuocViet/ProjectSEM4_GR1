@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Entity;
+package Model;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -30,11 +30,11 @@ public class Placesvisit implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "V_ID")
+    @Column(name = "V_ID", nullable = false)
     private Integer vId;
-    @Column(name = "V_Title")
+    @Column(name = "V_Title", length = 100)
     private String vTitle;
-    @Column(name = "V_Description")
+    @Column(name = "V_Description", length = 1073741823)
     private String vDescription;
 
     public Placesvisit() {
@@ -90,7 +90,7 @@ public class Placesvisit implements Serializable {
 
     @Override
     public String toString() {
-        return "Entity.Placesvisit[ vId=" + vId + " ]";
+        return "Model.Placesvisit[ vId=" + vId + " ]";
     }
     
 }

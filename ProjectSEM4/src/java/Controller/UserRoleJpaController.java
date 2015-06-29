@@ -6,14 +6,15 @@ package Controller;
 
 import Controller.exceptions.NonexistentEntityException;
 import Controller.exceptions.PreexistingEntityException;
-import Entity.UserRole;
+import Model.UserRole;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import Entity.Users;
+import Model.Users;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -34,27 +35,27 @@ public class UserRoleJpaController implements Serializable {
     }
 
     public void create(UserRole userRole) throws PreexistingEntityException, Exception {
-        if (userRole.getUsersList() == null) {
-            userRole.setUsersList(new ArrayList<Users>());
+        if (userRole.getUsersCollection() == null) {
+            userRole.setUsersCollection(new ArrayList<Users>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            List<Users> attachedUsersList = new ArrayList<Users>();
-            for (Users usersListUsersToAttach : userRole.getUsersList()) {
-                usersListUsersToAttach = em.getReference(usersListUsersToAttach.getClass(), usersListUsersToAttach.getUId());
-                attachedUsersList.add(usersListUsersToAttach);
+            Collection<Users> attachedUsersCollection = new ArrayList<Users>();
+            for (Users usersCollectionUsersToAttach : userRole.getUsersCollection()) {
+                usersCollectionUsersToAttach = em.getReference(usersCollectionUsersToAttach.getClass(), usersCollectionUsersToAttach.getUId());
+                attachedUsersCollection.add(usersCollectionUsersToAttach);
             }
-            userRole.setUsersList(attachedUsersList);
+            userRole.setUsersCollection(attachedUsersCollection);
             em.persist(userRole);
-            for (Users usersListUsers : userRole.getUsersList()) {
-                UserRole oldURoleOfUsersListUsers = usersListUsers.getURole();
-                usersListUsers.setURole(userRole);
-                usersListUsers = em.merge(usersListUsers);
-                if (oldURoleOfUsersListUsers != null) {
-                    oldURoleOfUsersListUsers.getUsersList().remove(usersListUsers);
-                    oldURoleOfUsersListUsers = em.merge(oldURoleOfUsersListUsers);
+            for (Users usersCollectionUsers : userRole.getUsersCollection()) {
+                UserRole oldURoleOfUsersCollectionUsers = usersCollectionUsers.getURole();
+                usersCollectionUsers.setURole(userRole);
+                usersCollectionUsers = em.merge(usersCollectionUsers);
+                if (oldURoleOfUsersCollectionUsers != null) {
+                    oldURoleOfUsersCollectionUsers.getUsersCollection().remove(usersCollectionUsers);
+                    oldURoleOfUsersCollectionUsers = em.merge(oldURoleOfUsersCollectionUsers);
                 }
             }
             em.getTransaction().commit();
@@ -76,30 +77,30 @@ public class UserRoleJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             UserRole persistentUserRole = em.find(UserRole.class, userRole.getUrId());
-            List<Users> usersListOld = persistentUserRole.getUsersList();
-            List<Users> usersListNew = userRole.getUsersList();
-            List<Users> attachedUsersListNew = new ArrayList<Users>();
-            for (Users usersListNewUsersToAttach : usersListNew) {
-                usersListNewUsersToAttach = em.getReference(usersListNewUsersToAttach.getClass(), usersListNewUsersToAttach.getUId());
-                attachedUsersListNew.add(usersListNewUsersToAttach);
+            Collection<Users> usersCollectionOld = persistentUserRole.getUsersCollection();
+            Collection<Users> usersCollectionNew = userRole.getUsersCollection();
+            Collection<Users> attachedUsersCollectionNew = new ArrayList<Users>();
+            for (Users usersCollectionNewUsersToAttach : usersCollectionNew) {
+                usersCollectionNewUsersToAttach = em.getReference(usersCollectionNewUsersToAttach.getClass(), usersCollectionNewUsersToAttach.getUId());
+                attachedUsersCollectionNew.add(usersCollectionNewUsersToAttach);
             }
-            usersListNew = attachedUsersListNew;
-            userRole.setUsersList(usersListNew);
+            usersCollectionNew = attachedUsersCollectionNew;
+            userRole.setUsersCollection(usersCollectionNew);
             userRole = em.merge(userRole);
-            for (Users usersListOldUsers : usersListOld) {
-                if (!usersListNew.contains(usersListOldUsers)) {
-                    usersListOldUsers.setURole(null);
-                    usersListOldUsers = em.merge(usersListOldUsers);
+            for (Users usersCollectionOldUsers : usersCollectionOld) {
+                if (!usersCollectionNew.contains(usersCollectionOldUsers)) {
+                    usersCollectionOldUsers.setURole(null);
+                    usersCollectionOldUsers = em.merge(usersCollectionOldUsers);
                 }
             }
-            for (Users usersListNewUsers : usersListNew) {
-                if (!usersListOld.contains(usersListNewUsers)) {
-                    UserRole oldURoleOfUsersListNewUsers = usersListNewUsers.getURole();
-                    usersListNewUsers.setURole(userRole);
-                    usersListNewUsers = em.merge(usersListNewUsers);
-                    if (oldURoleOfUsersListNewUsers != null && !oldURoleOfUsersListNewUsers.equals(userRole)) {
-                        oldURoleOfUsersListNewUsers.getUsersList().remove(usersListNewUsers);
-                        oldURoleOfUsersListNewUsers = em.merge(oldURoleOfUsersListNewUsers);
+            for (Users usersCollectionNewUsers : usersCollectionNew) {
+                if (!usersCollectionOld.contains(usersCollectionNewUsers)) {
+                    UserRole oldURoleOfUsersCollectionNewUsers = usersCollectionNewUsers.getURole();
+                    usersCollectionNewUsers.setURole(userRole);
+                    usersCollectionNewUsers = em.merge(usersCollectionNewUsers);
+                    if (oldURoleOfUsersCollectionNewUsers != null && !oldURoleOfUsersCollectionNewUsers.equals(userRole)) {
+                        oldURoleOfUsersCollectionNewUsers.getUsersCollection().remove(usersCollectionNewUsers);
+                        oldURoleOfUsersCollectionNewUsers = em.merge(oldURoleOfUsersCollectionNewUsers);
                     }
                 }
             }
@@ -132,10 +133,10 @@ public class UserRoleJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The userRole with id " + id + " no longer exists.", enfe);
             }
-            List<Users> usersList = userRole.getUsersList();
-            for (Users usersListUsers : usersList) {
-                usersListUsers.setURole(null);
-                usersListUsers = em.merge(usersListUsers);
+            Collection<Users> usersCollection = userRole.getUsersCollection();
+            for (Users usersCollectionUsers : usersCollection) {
+                usersCollectionUsers.setURole(null);
+                usersCollectionUsers = em.merge(usersCollectionUsers);
             }
             em.remove(userRole);
             em.getTransaction().commit();

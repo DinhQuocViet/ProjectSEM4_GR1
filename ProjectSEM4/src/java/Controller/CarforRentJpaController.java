@@ -6,14 +6,15 @@ package Controller;
 
 import Controller.exceptions.NonexistentEntityException;
 import Controller.exceptions.PreexistingEntityException;
-import Entity.CarforRent;
+import Model.CarforRent;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import Entity.Rentcar;
+import Model.Rentcar;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -34,27 +35,27 @@ public class CarforRentJpaController implements Serializable {
     }
 
     public void create(CarforRent carforRent) throws PreexistingEntityException, Exception {
-        if (carforRent.getRentcarList() == null) {
-            carforRent.setRentcarList(new ArrayList<Rentcar>());
+        if (carforRent.getRentcarCollection() == null) {
+            carforRent.setRentcarCollection(new ArrayList<Rentcar>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            List<Rentcar> attachedRentcarList = new ArrayList<Rentcar>();
-            for (Rentcar rentcarListRentcarToAttach : carforRent.getRentcarList()) {
-                rentcarListRentcarToAttach = em.getReference(rentcarListRentcarToAttach.getClass(), rentcarListRentcarToAttach.getRId());
-                attachedRentcarList.add(rentcarListRentcarToAttach);
+            Collection<Rentcar> attachedRentcarCollection = new ArrayList<Rentcar>();
+            for (Rentcar rentcarCollectionRentcarToAttach : carforRent.getRentcarCollection()) {
+                rentcarCollectionRentcarToAttach = em.getReference(rentcarCollectionRentcarToAttach.getClass(), rentcarCollectionRentcarToAttach.getRId());
+                attachedRentcarCollection.add(rentcarCollectionRentcarToAttach);
             }
-            carforRent.setRentcarList(attachedRentcarList);
+            carforRent.setRentcarCollection(attachedRentcarCollection);
             em.persist(carforRent);
-            for (Rentcar rentcarListRentcar : carforRent.getRentcarList()) {
-                CarforRent oldCIdOfRentcarListRentcar = rentcarListRentcar.getCId();
-                rentcarListRentcar.setCId(carforRent);
-                rentcarListRentcar = em.merge(rentcarListRentcar);
-                if (oldCIdOfRentcarListRentcar != null) {
-                    oldCIdOfRentcarListRentcar.getRentcarList().remove(rentcarListRentcar);
-                    oldCIdOfRentcarListRentcar = em.merge(oldCIdOfRentcarListRentcar);
+            for (Rentcar rentcarCollectionRentcar : carforRent.getRentcarCollection()) {
+                CarforRent oldCIdOfRentcarCollectionRentcar = rentcarCollectionRentcar.getCId();
+                rentcarCollectionRentcar.setCId(carforRent);
+                rentcarCollectionRentcar = em.merge(rentcarCollectionRentcar);
+                if (oldCIdOfRentcarCollectionRentcar != null) {
+                    oldCIdOfRentcarCollectionRentcar.getRentcarCollection().remove(rentcarCollectionRentcar);
+                    oldCIdOfRentcarCollectionRentcar = em.merge(oldCIdOfRentcarCollectionRentcar);
                 }
             }
             em.getTransaction().commit();
@@ -76,30 +77,30 @@ public class CarforRentJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             CarforRent persistentCarforRent = em.find(CarforRent.class, carforRent.getCId());
-            List<Rentcar> rentcarListOld = persistentCarforRent.getRentcarList();
-            List<Rentcar> rentcarListNew = carforRent.getRentcarList();
-            List<Rentcar> attachedRentcarListNew = new ArrayList<Rentcar>();
-            for (Rentcar rentcarListNewRentcarToAttach : rentcarListNew) {
-                rentcarListNewRentcarToAttach = em.getReference(rentcarListNewRentcarToAttach.getClass(), rentcarListNewRentcarToAttach.getRId());
-                attachedRentcarListNew.add(rentcarListNewRentcarToAttach);
+            Collection<Rentcar> rentcarCollectionOld = persistentCarforRent.getRentcarCollection();
+            Collection<Rentcar> rentcarCollectionNew = carforRent.getRentcarCollection();
+            Collection<Rentcar> attachedRentcarCollectionNew = new ArrayList<Rentcar>();
+            for (Rentcar rentcarCollectionNewRentcarToAttach : rentcarCollectionNew) {
+                rentcarCollectionNewRentcarToAttach = em.getReference(rentcarCollectionNewRentcarToAttach.getClass(), rentcarCollectionNewRentcarToAttach.getRId());
+                attachedRentcarCollectionNew.add(rentcarCollectionNewRentcarToAttach);
             }
-            rentcarListNew = attachedRentcarListNew;
-            carforRent.setRentcarList(rentcarListNew);
+            rentcarCollectionNew = attachedRentcarCollectionNew;
+            carforRent.setRentcarCollection(rentcarCollectionNew);
             carforRent = em.merge(carforRent);
-            for (Rentcar rentcarListOldRentcar : rentcarListOld) {
-                if (!rentcarListNew.contains(rentcarListOldRentcar)) {
-                    rentcarListOldRentcar.setCId(null);
-                    rentcarListOldRentcar = em.merge(rentcarListOldRentcar);
+            for (Rentcar rentcarCollectionOldRentcar : rentcarCollectionOld) {
+                if (!rentcarCollectionNew.contains(rentcarCollectionOldRentcar)) {
+                    rentcarCollectionOldRentcar.setCId(null);
+                    rentcarCollectionOldRentcar = em.merge(rentcarCollectionOldRentcar);
                 }
             }
-            for (Rentcar rentcarListNewRentcar : rentcarListNew) {
-                if (!rentcarListOld.contains(rentcarListNewRentcar)) {
-                    CarforRent oldCIdOfRentcarListNewRentcar = rentcarListNewRentcar.getCId();
-                    rentcarListNewRentcar.setCId(carforRent);
-                    rentcarListNewRentcar = em.merge(rentcarListNewRentcar);
-                    if (oldCIdOfRentcarListNewRentcar != null && !oldCIdOfRentcarListNewRentcar.equals(carforRent)) {
-                        oldCIdOfRentcarListNewRentcar.getRentcarList().remove(rentcarListNewRentcar);
-                        oldCIdOfRentcarListNewRentcar = em.merge(oldCIdOfRentcarListNewRentcar);
+            for (Rentcar rentcarCollectionNewRentcar : rentcarCollectionNew) {
+                if (!rentcarCollectionOld.contains(rentcarCollectionNewRentcar)) {
+                    CarforRent oldCIdOfRentcarCollectionNewRentcar = rentcarCollectionNewRentcar.getCId();
+                    rentcarCollectionNewRentcar.setCId(carforRent);
+                    rentcarCollectionNewRentcar = em.merge(rentcarCollectionNewRentcar);
+                    if (oldCIdOfRentcarCollectionNewRentcar != null && !oldCIdOfRentcarCollectionNewRentcar.equals(carforRent)) {
+                        oldCIdOfRentcarCollectionNewRentcar.getRentcarCollection().remove(rentcarCollectionNewRentcar);
+                        oldCIdOfRentcarCollectionNewRentcar = em.merge(oldCIdOfRentcarCollectionNewRentcar);
                     }
                 }
             }
@@ -132,10 +133,10 @@ public class CarforRentJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The carforRent with id " + id + " no longer exists.", enfe);
             }
-            List<Rentcar> rentcarList = carforRent.getRentcarList();
-            for (Rentcar rentcarListRentcar : rentcarList) {
-                rentcarListRentcar.setCId(null);
-                rentcarListRentcar = em.merge(rentcarListRentcar);
+            Collection<Rentcar> rentcarCollection = carforRent.getRentcarCollection();
+            for (Rentcar rentcarCollectionRentcar : rentcarCollection) {
+                rentcarCollectionRentcar.setCId(null);
+                rentcarCollectionRentcar = em.merge(rentcarCollectionRentcar);
             }
             em.remove(carforRent);
             em.getTransaction().commit();

@@ -11,9 +11,9 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import Entity.Users;
-import Entity.CarforRent;
-import Entity.Rentcar;
+import Model.Users;
+import Model.CarforRent;
+import Model.Rentcar;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -50,11 +50,11 @@ public class RentcarJpaController implements Serializable {
             }
             em.persist(rentcar);
             if (UId != null) {
-                UId.getRentcarList().add(rentcar);
+                UId.getRentcarCollection().add(rentcar);
                 UId = em.merge(UId);
             }
             if (CId != null) {
-                CId.getRentcarList().add(rentcar);
+                CId.getRentcarCollection().add(rentcar);
                 CId = em.merge(CId);
             }
             em.getTransaction().commit();
@@ -90,19 +90,19 @@ public class RentcarJpaController implements Serializable {
             }
             rentcar = em.merge(rentcar);
             if (UIdOld != null && !UIdOld.equals(UIdNew)) {
-                UIdOld.getRentcarList().remove(rentcar);
+                UIdOld.getRentcarCollection().remove(rentcar);
                 UIdOld = em.merge(UIdOld);
             }
             if (UIdNew != null && !UIdNew.equals(UIdOld)) {
-                UIdNew.getRentcarList().add(rentcar);
+                UIdNew.getRentcarCollection().add(rentcar);
                 UIdNew = em.merge(UIdNew);
             }
             if (CIdOld != null && !CIdOld.equals(CIdNew)) {
-                CIdOld.getRentcarList().remove(rentcar);
+                CIdOld.getRentcarCollection().remove(rentcar);
                 CIdOld = em.merge(CIdOld);
             }
             if (CIdNew != null && !CIdNew.equals(CIdOld)) {
-                CIdNew.getRentcarList().add(rentcar);
+                CIdNew.getRentcarCollection().add(rentcar);
                 CIdNew = em.merge(CIdNew);
             }
             em.getTransaction().commit();
@@ -136,12 +136,12 @@ public class RentcarJpaController implements Serializable {
             }
             Users UId = rentcar.getUId();
             if (UId != null) {
-                UId.getRentcarList().remove(rentcar);
+                UId.getRentcarCollection().remove(rentcar);
                 UId = em.merge(UId);
             }
             CarforRent CId = rentcar.getCId();
             if (CId != null) {
-                CId.getRentcarList().remove(rentcar);
+                CId.getRentcarCollection().remove(rentcar);
                 CId = em.merge(CId);
             }
             em.remove(rentcar);

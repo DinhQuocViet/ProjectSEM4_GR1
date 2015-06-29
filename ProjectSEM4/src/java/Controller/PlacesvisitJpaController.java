@@ -6,7 +6,7 @@ package Controller;
 
 import Controller.exceptions.NonexistentEntityException;
 import Controller.exceptions.PreexistingEntityException;
-import Entity.Placesvisit;
+import Model.Placesvisit;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;

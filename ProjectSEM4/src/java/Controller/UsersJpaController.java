@@ -11,12 +11,13 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import Entity.UserRole;
-import Entity.BookingTour;
+import Model.UserRole;
+import Model.BookingTour;
 import java.util.ArrayList;
+import java.util.Collection;
+import Model.Rentcar;
+import Model.Users;
 import java.util.List;
-import Entity.Rentcar;
-import Entity.Users;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -36,11 +37,11 @@ public class UsersJpaController implements Serializable {
     }
 
     public void create(Users users) throws PreexistingEntityException, Exception {
-        if (users.getBookingTourList() == null) {
-            users.setBookingTourList(new ArrayList<BookingTour>());
+        if (users.getBookingTourCollection() == null) {
+            users.setBookingTourCollection(new ArrayList<BookingTour>());
         }
-        if (users.getRentcarList() == null) {
-            users.setRentcarList(new ArrayList<Rentcar>());
+        if (users.getRentcarCollection() == null) {
+            users.setRentcarCollection(new ArrayList<Rentcar>());
         }
         EntityManager em = null;
         try {
@@ -51,39 +52,39 @@ public class UsersJpaController implements Serializable {
                 URole = em.getReference(URole.getClass(), URole.getUrId());
                 users.setURole(URole);
             }
-            List<BookingTour> attachedBookingTourList = new ArrayList<BookingTour>();
-            for (BookingTour bookingTourListBookingTourToAttach : users.getBookingTourList()) {
-                bookingTourListBookingTourToAttach = em.getReference(bookingTourListBookingTourToAttach.getClass(), bookingTourListBookingTourToAttach.getBId());
-                attachedBookingTourList.add(bookingTourListBookingTourToAttach);
+            Collection<BookingTour> attachedBookingTourCollection = new ArrayList<BookingTour>();
+            for (BookingTour bookingTourCollectionBookingTourToAttach : users.getBookingTourCollection()) {
+                bookingTourCollectionBookingTourToAttach = em.getReference(bookingTourCollectionBookingTourToAttach.getClass(), bookingTourCollectionBookingTourToAttach.getBId());
+                attachedBookingTourCollection.add(bookingTourCollectionBookingTourToAttach);
             }
-            users.setBookingTourList(attachedBookingTourList);
-            List<Rentcar> attachedRentcarList = new ArrayList<Rentcar>();
-            for (Rentcar rentcarListRentcarToAttach : users.getRentcarList()) {
-                rentcarListRentcarToAttach = em.getReference(rentcarListRentcarToAttach.getClass(), rentcarListRentcarToAttach.getRId());
-                attachedRentcarList.add(rentcarListRentcarToAttach);
+            users.setBookingTourCollection(attachedBookingTourCollection);
+            Collection<Rentcar> attachedRentcarCollection = new ArrayList<Rentcar>();
+            for (Rentcar rentcarCollectionRentcarToAttach : users.getRentcarCollection()) {
+                rentcarCollectionRentcarToAttach = em.getReference(rentcarCollectionRentcarToAttach.getClass(), rentcarCollectionRentcarToAttach.getRId());
+                attachedRentcarCollection.add(rentcarCollectionRentcarToAttach);
             }
-            users.setRentcarList(attachedRentcarList);
+            users.setRentcarCollection(attachedRentcarCollection);
             em.persist(users);
             if (URole != null) {
-                URole.getUsersList().add(users);
+                URole.getUsersCollection().add(users);
                 URole = em.merge(URole);
             }
-            for (BookingTour bookingTourListBookingTour : users.getBookingTourList()) {
-                Users oldUIdOfBookingTourListBookingTour = bookingTourListBookingTour.getUId();
-                bookingTourListBookingTour.setUId(users);
-                bookingTourListBookingTour = em.merge(bookingTourListBookingTour);
-                if (oldUIdOfBookingTourListBookingTour != null) {
-                    oldUIdOfBookingTourListBookingTour.getBookingTourList().remove(bookingTourListBookingTour);
-                    oldUIdOfBookingTourListBookingTour = em.merge(oldUIdOfBookingTourListBookingTour);
+            for (BookingTour bookingTourCollectionBookingTour : users.getBookingTourCollection()) {
+                Users oldUIdOfBookingTourCollectionBookingTour = bookingTourCollectionBookingTour.getUId();
+                bookingTourCollectionBookingTour.setUId(users);
+                bookingTourCollectionBookingTour = em.merge(bookingTourCollectionBookingTour);
+                if (oldUIdOfBookingTourCollectionBookingTour != null) {
+                    oldUIdOfBookingTourCollectionBookingTour.getBookingTourCollection().remove(bookingTourCollectionBookingTour);
+                    oldUIdOfBookingTourCollectionBookingTour = em.merge(oldUIdOfBookingTourCollectionBookingTour);
                 }
             }
-            for (Rentcar rentcarListRentcar : users.getRentcarList()) {
-                Users oldUIdOfRentcarListRentcar = rentcarListRentcar.getUId();
-                rentcarListRentcar.setUId(users);
-                rentcarListRentcar = em.merge(rentcarListRentcar);
-                if (oldUIdOfRentcarListRentcar != null) {
-                    oldUIdOfRentcarListRentcar.getRentcarList().remove(rentcarListRentcar);
-                    oldUIdOfRentcarListRentcar = em.merge(oldUIdOfRentcarListRentcar);
+            for (Rentcar rentcarCollectionRentcar : users.getRentcarCollection()) {
+                Users oldUIdOfRentcarCollectionRentcar = rentcarCollectionRentcar.getUId();
+                rentcarCollectionRentcar.setUId(users);
+                rentcarCollectionRentcar = em.merge(rentcarCollectionRentcar);
+                if (oldUIdOfRentcarCollectionRentcar != null) {
+                    oldUIdOfRentcarCollectionRentcar.getRentcarCollection().remove(rentcarCollectionRentcar);
+                    oldUIdOfRentcarCollectionRentcar = em.merge(oldUIdOfRentcarCollectionRentcar);
                 }
             }
             em.getTransaction().commit();
@@ -107,68 +108,68 @@ public class UsersJpaController implements Serializable {
             Users persistentUsers = em.find(Users.class, users.getUId());
             UserRole URoleOld = persistentUsers.getURole();
             UserRole URoleNew = users.getURole();
-            List<BookingTour> bookingTourListOld = persistentUsers.getBookingTourList();
-            List<BookingTour> bookingTourListNew = users.getBookingTourList();
-            List<Rentcar> rentcarListOld = persistentUsers.getRentcarList();
-            List<Rentcar> rentcarListNew = users.getRentcarList();
+            Collection<BookingTour> bookingTourCollectionOld = persistentUsers.getBookingTourCollection();
+            Collection<BookingTour> bookingTourCollectionNew = users.getBookingTourCollection();
+            Collection<Rentcar> rentcarCollectionOld = persistentUsers.getRentcarCollection();
+            Collection<Rentcar> rentcarCollectionNew = users.getRentcarCollection();
             if (URoleNew != null) {
                 URoleNew = em.getReference(URoleNew.getClass(), URoleNew.getUrId());
                 users.setURole(URoleNew);
             }
-            List<BookingTour> attachedBookingTourListNew = new ArrayList<BookingTour>();
-            for (BookingTour bookingTourListNewBookingTourToAttach : bookingTourListNew) {
-                bookingTourListNewBookingTourToAttach = em.getReference(bookingTourListNewBookingTourToAttach.getClass(), bookingTourListNewBookingTourToAttach.getBId());
-                attachedBookingTourListNew.add(bookingTourListNewBookingTourToAttach);
+            Collection<BookingTour> attachedBookingTourCollectionNew = new ArrayList<BookingTour>();
+            for (BookingTour bookingTourCollectionNewBookingTourToAttach : bookingTourCollectionNew) {
+                bookingTourCollectionNewBookingTourToAttach = em.getReference(bookingTourCollectionNewBookingTourToAttach.getClass(), bookingTourCollectionNewBookingTourToAttach.getBId());
+                attachedBookingTourCollectionNew.add(bookingTourCollectionNewBookingTourToAttach);
             }
-            bookingTourListNew = attachedBookingTourListNew;
-            users.setBookingTourList(bookingTourListNew);
-            List<Rentcar> attachedRentcarListNew = new ArrayList<Rentcar>();
-            for (Rentcar rentcarListNewRentcarToAttach : rentcarListNew) {
-                rentcarListNewRentcarToAttach = em.getReference(rentcarListNewRentcarToAttach.getClass(), rentcarListNewRentcarToAttach.getRId());
-                attachedRentcarListNew.add(rentcarListNewRentcarToAttach);
+            bookingTourCollectionNew = attachedBookingTourCollectionNew;
+            users.setBookingTourCollection(bookingTourCollectionNew);
+            Collection<Rentcar> attachedRentcarCollectionNew = new ArrayList<Rentcar>();
+            for (Rentcar rentcarCollectionNewRentcarToAttach : rentcarCollectionNew) {
+                rentcarCollectionNewRentcarToAttach = em.getReference(rentcarCollectionNewRentcarToAttach.getClass(), rentcarCollectionNewRentcarToAttach.getRId());
+                attachedRentcarCollectionNew.add(rentcarCollectionNewRentcarToAttach);
             }
-            rentcarListNew = attachedRentcarListNew;
-            users.setRentcarList(rentcarListNew);
+            rentcarCollectionNew = attachedRentcarCollectionNew;
+            users.setRentcarCollection(rentcarCollectionNew);
             users = em.merge(users);
             if (URoleOld != null && !URoleOld.equals(URoleNew)) {
-                URoleOld.getUsersList().remove(users);
+                URoleOld.getUsersCollection().remove(users);
                 URoleOld = em.merge(URoleOld);
             }
             if (URoleNew != null && !URoleNew.equals(URoleOld)) {
-                URoleNew.getUsersList().add(users);
+                URoleNew.getUsersCollection().add(users);
                 URoleNew = em.merge(URoleNew);
             }
-            for (BookingTour bookingTourListOldBookingTour : bookingTourListOld) {
-                if (!bookingTourListNew.contains(bookingTourListOldBookingTour)) {
-                    bookingTourListOldBookingTour.setUId(null);
-                    bookingTourListOldBookingTour = em.merge(bookingTourListOldBookingTour);
+            for (BookingTour bookingTourCollectionOldBookingTour : bookingTourCollectionOld) {
+                if (!bookingTourCollectionNew.contains(bookingTourCollectionOldBookingTour)) {
+                    bookingTourCollectionOldBookingTour.setUId(null);
+                    bookingTourCollectionOldBookingTour = em.merge(bookingTourCollectionOldBookingTour);
                 }
             }
-            for (BookingTour bookingTourListNewBookingTour : bookingTourListNew) {
-                if (!bookingTourListOld.contains(bookingTourListNewBookingTour)) {
-                    Users oldUIdOfBookingTourListNewBookingTour = bookingTourListNewBookingTour.getUId();
-                    bookingTourListNewBookingTour.setUId(users);
-                    bookingTourListNewBookingTour = em.merge(bookingTourListNewBookingTour);
-                    if (oldUIdOfBookingTourListNewBookingTour != null && !oldUIdOfBookingTourListNewBookingTour.equals(users)) {
-                        oldUIdOfBookingTourListNewBookingTour.getBookingTourList().remove(bookingTourListNewBookingTour);
-                        oldUIdOfBookingTourListNewBookingTour = em.merge(oldUIdOfBookingTourListNewBookingTour);
+            for (BookingTour bookingTourCollectionNewBookingTour : bookingTourCollectionNew) {
+                if (!bookingTourCollectionOld.contains(bookingTourCollectionNewBookingTour)) {
+                    Users oldUIdOfBookingTourCollectionNewBookingTour = bookingTourCollectionNewBookingTour.getUId();
+                    bookingTourCollectionNewBookingTour.setUId(users);
+                    bookingTourCollectionNewBookingTour = em.merge(bookingTourCollectionNewBookingTour);
+                    if (oldUIdOfBookingTourCollectionNewBookingTour != null && !oldUIdOfBookingTourCollectionNewBookingTour.equals(users)) {
+                        oldUIdOfBookingTourCollectionNewBookingTour.getBookingTourCollection().remove(bookingTourCollectionNewBookingTour);
+                        oldUIdOfBookingTourCollectionNewBookingTour = em.merge(oldUIdOfBookingTourCollectionNewBookingTour);
                     }
                 }
             }
-            for (Rentcar rentcarListOldRentcar : rentcarListOld) {
-                if (!rentcarListNew.contains(rentcarListOldRentcar)) {
-                    rentcarListOldRentcar.setUId(null);
-                    rentcarListOldRentcar = em.merge(rentcarListOldRentcar);
+            for (Rentcar rentcarCollectionOldRentcar : rentcarCollectionOld) {
+                if (!rentcarCollectionNew.contains(rentcarCollectionOldRentcar)) {
+                    rentcarCollectionOldRentcar.setUId(null);
+                    rentcarCollectionOldRentcar = em.merge(rentcarCollectionOldRentcar);
                 }
             }
-            for (Rentcar rentcarListNewRentcar : rentcarListNew) {
-                if (!rentcarListOld.contains(rentcarListNewRentcar)) {
-                    Users oldUIdOfRentcarListNewRentcar = rentcarListNewRentcar.getUId();
-                    rentcarListNewRentcar.setUId(users);
-                    rentcarListNewRentcar = em.merge(rentcarListNewRentcar);
-                    if (oldUIdOfRentcarListNewRentcar != null && !oldUIdOfRentcarListNewRentcar.equals(users)) {
-                        oldUIdOfRentcarListNewRentcar.getRentcarList().remove(rentcarListNewRentcar);
-                        oldUIdOfRentcarListNewRentcar = em.merge(oldUIdOfRentcarListNewRentcar);
+            for (Rentcar rentcarCollectionNewRentcar : rentcarCollectionNew) {
+                if (!rentcarCollectionOld.contains(rentcarCollectionNewRentcar)) {
+                    Users oldUIdOfRentcarCollectionNewRentcar = rentcarCollectionNewRentcar.getUId();
+                    rentcarCollectionNewRentcar.setUId(users);
+                    rentcarCollectionNewRentcar = em.merge(rentcarCollectionNewRentcar);
+                    if (oldUIdOfRentcarCollectionNewRentcar != null && !oldUIdOfRentcarCollectionNewRentcar.equals(users)) {
+                        oldUIdOfRentcarCollectionNewRentcar.getRentcarCollection().remove(rentcarCollectionNewRentcar);
+                        oldUIdOfRentcarCollectionNewRentcar = em.merge(oldUIdOfRentcarCollectionNewRentcar);
                     }
                 }
             }
@@ -203,18 +204,18 @@ public class UsersJpaController implements Serializable {
             }
             UserRole URole = users.getURole();
             if (URole != null) {
-                URole.getUsersList().remove(users);
+                URole.getUsersCollection().remove(users);
                 URole = em.merge(URole);
             }
-            List<BookingTour> bookingTourList = users.getBookingTourList();
-            for (BookingTour bookingTourListBookingTour : bookingTourList) {
-                bookingTourListBookingTour.setUId(null);
-                bookingTourListBookingTour = em.merge(bookingTourListBookingTour);
+            Collection<BookingTour> bookingTourCollection = users.getBookingTourCollection();
+            for (BookingTour bookingTourCollectionBookingTour : bookingTourCollection) {
+                bookingTourCollectionBookingTour.setUId(null);
+                bookingTourCollectionBookingTour = em.merge(bookingTourCollectionBookingTour);
             }
-            List<Rentcar> rentcarList = users.getRentcarList();
-            for (Rentcar rentcarListRentcar : rentcarList) {
-                rentcarListRentcar.setUId(null);
-                rentcarListRentcar = em.merge(rentcarListRentcar);
+            Collection<Rentcar> rentcarCollection = users.getRentcarCollection();
+            for (Rentcar rentcarCollectionRentcar : rentcarCollection) {
+                rentcarCollectionRentcar.setUId(null);
+                rentcarCollectionRentcar = em.merge(rentcarCollectionRentcar);
             }
             em.remove(users);
             em.getTransaction().commit();

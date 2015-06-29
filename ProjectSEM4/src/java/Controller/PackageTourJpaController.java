@@ -6,13 +6,13 @@ package Controller;
 
 import Controller.exceptions.NonexistentEntityException;
 import Controller.exceptions.PreexistingEntityException;
-import Entity.PackageTour;
+import Model.PackageTour;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import Entity.TourType;
+import Model.TourType;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -44,7 +44,7 @@ public class PackageTourJpaController implements Serializable {
             }
             em.persist(packageTour);
             if (PType != null) {
-                PType.getPackageTourList().add(packageTour);
+                PType.getPackageTourCollection().add(packageTour);
                 PType = em.merge(PType);
             }
             em.getTransaction().commit();
@@ -74,11 +74,11 @@ public class PackageTourJpaController implements Serializable {
             }
             packageTour = em.merge(packageTour);
             if (PTypeOld != null && !PTypeOld.equals(PTypeNew)) {
-                PTypeOld.getPackageTourList().remove(packageTour);
+                PTypeOld.getPackageTourCollection().remove(packageTour);
                 PTypeOld = em.merge(PTypeOld);
             }
             if (PTypeNew != null && !PTypeNew.equals(PTypeOld)) {
-                PTypeNew.getPackageTourList().add(packageTour);
+                PTypeNew.getPackageTourCollection().add(packageTour);
                 PTypeNew = em.merge(PTypeNew);
             }
             em.getTransaction().commit();
@@ -112,7 +112,7 @@ public class PackageTourJpaController implements Serializable {
             }
             TourType PType = packageTour.getPType();
             if (PType != null) {
-                PType.getPackageTourList().remove(packageTour);
+                PType.getPackageTourCollection().remove(packageTour);
                 PType = em.merge(PType);
             }
             em.remove(packageTour);

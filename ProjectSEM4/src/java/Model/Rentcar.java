@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Entity;
+package Model;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -37,7 +37,7 @@ public class Rentcar implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "R_ID")
+    @Column(name = "R_ID", nullable = false)
     private Integer rId;
     @Column(name = "R_PickUp")
     @Temporal(TemporalType.DATE)
@@ -47,7 +47,7 @@ public class Rentcar implements Serializable {
     private Date rDropOff;
     @Column(name = "R_Driver")
     private Boolean rDriver;
-    @Column(name = "R_Status")
+    @Column(name = "R_Status", length = 20)
     private String rStatus;
     @JoinColumn(name = "U_ID", referencedColumnName = "U_ID")
     @ManyToOne
@@ -141,7 +141,7 @@ public class Rentcar implements Serializable {
 
     @Override
     public String toString() {
-        return "Entity.Rentcar[ rId=" + rId + " ]";
+        return "Model.Rentcar[ rId=" + rId + " ]";
     }
     
 }

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Entity;
+package Model;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -32,11 +32,11 @@ public class BookingTour implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "B_ID")
+    @Column(name = "B_ID", nullable = false)
     private Integer bId;
     @Column(name = "B_Person")
     private Integer bPerson;
-    @Column(name = "B_status")
+    @Column(name = "B_status", length = 50)
     private String bstatus;
     @JoinColumn(name = "U_ID", referencedColumnName = "U_ID")
     @ManyToOne
@@ -103,7 +103,7 @@ public class BookingTour implements Serializable {
 
     @Override
     public String toString() {
-        return "Entity.BookingTour[ bId=" + bId + " ]";
+        return "Model.BookingTour[ bId=" + bId + " ]";
     }
     
 }

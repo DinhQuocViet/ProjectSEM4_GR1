@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Entity;
+package Model;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -34,16 +34,16 @@ public class PackageTour implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "P_ID")
+    @Column(name = "P_ID", nullable = false)
     private Integer pId;
-    @Column(name = "P_Title")
+    @Column(name = "P_Title", length = 100)
     private String pTitle;
-    @Column(name = "P_Duration")
+    @Column(name = "P_Duration", length = 20)
     private String pDuration;
-    @Column(name = "P_Description")
+    @Column(name = "P_Description", length = 1073741823)
     private String pDescription;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "P_Price")
+    @Column(name = "P_Price", precision = 53)
     private Double pPrice;
     @JoinColumn(name = "P_Type", referencedColumnName = "T_ID")
     @ManyToOne
@@ -126,7 +126,7 @@ public class PackageTour implements Serializable {
 
     @Override
     public String toString() {
-        return "Entity.PackageTour[ pId=" + pId + " ]";
+        return "Model.PackageTour[ pId=" + pId + " ]";
     }
     
 }

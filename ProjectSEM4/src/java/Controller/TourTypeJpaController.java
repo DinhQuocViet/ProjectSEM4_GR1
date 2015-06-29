@@ -11,9 +11,10 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import Entity.PackageTour;
-import Entity.TourType;
+import Model.PackageTour;
+import Model.TourType;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -34,27 +35,27 @@ public class TourTypeJpaController implements Serializable {
     }
 
     public void create(TourType tourType) throws PreexistingEntityException, Exception {
-        if (tourType.getPackageTourList() == null) {
-            tourType.setPackageTourList(new ArrayList<PackageTour>());
+        if (tourType.getPackageTourCollection() == null) {
+            tourType.setPackageTourCollection(new ArrayList<PackageTour>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            List<PackageTour> attachedPackageTourList = new ArrayList<PackageTour>();
-            for (PackageTour packageTourListPackageTourToAttach : tourType.getPackageTourList()) {
-                packageTourListPackageTourToAttach = em.getReference(packageTourListPackageTourToAttach.getClass(), packageTourListPackageTourToAttach.getPId());
-                attachedPackageTourList.add(packageTourListPackageTourToAttach);
+            Collection<PackageTour> attachedPackageTourCollection = new ArrayList<PackageTour>();
+            for (PackageTour packageTourCollectionPackageTourToAttach : tourType.getPackageTourCollection()) {
+                packageTourCollectionPackageTourToAttach = em.getReference(packageTourCollectionPackageTourToAttach.getClass(), packageTourCollectionPackageTourToAttach.getPId());
+                attachedPackageTourCollection.add(packageTourCollectionPackageTourToAttach);
             }
-            tourType.setPackageTourList(attachedPackageTourList);
+            tourType.setPackageTourCollection(attachedPackageTourCollection);
             em.persist(tourType);
-            for (PackageTour packageTourListPackageTour : tourType.getPackageTourList()) {
-                TourType oldPTypeOfPackageTourListPackageTour = packageTourListPackageTour.getPType();
-                packageTourListPackageTour.setPType(tourType);
-                packageTourListPackageTour = em.merge(packageTourListPackageTour);
-                if (oldPTypeOfPackageTourListPackageTour != null) {
-                    oldPTypeOfPackageTourListPackageTour.getPackageTourList().remove(packageTourListPackageTour);
-                    oldPTypeOfPackageTourListPackageTour = em.merge(oldPTypeOfPackageTourListPackageTour);
+            for (PackageTour packageTourCollectionPackageTour : tourType.getPackageTourCollection()) {
+                TourType oldPTypeOfPackageTourCollectionPackageTour = packageTourCollectionPackageTour.getPType();
+                packageTourCollectionPackageTour.setPType(tourType);
+                packageTourCollectionPackageTour = em.merge(packageTourCollectionPackageTour);
+                if (oldPTypeOfPackageTourCollectionPackageTour != null) {
+                    oldPTypeOfPackageTourCollectionPackageTour.getPackageTourCollection().remove(packageTourCollectionPackageTour);
+                    oldPTypeOfPackageTourCollectionPackageTour = em.merge(oldPTypeOfPackageTourCollectionPackageTour);
                 }
             }
             em.getTransaction().commit();
@@ -76,30 +77,30 @@ public class TourTypeJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             TourType persistentTourType = em.find(TourType.class, tourType.getTId());
-            List<PackageTour> packageTourListOld = persistentTourType.getPackageTourList();
-            List<PackageTour> packageTourListNew = tourType.getPackageTourList();
-            List<PackageTour> attachedPackageTourListNew = new ArrayList<PackageTour>();
-            for (PackageTour packageTourListNewPackageTourToAttach : packageTourListNew) {
-                packageTourListNewPackageTourToAttach = em.getReference(packageTourListNewPackageTourToAttach.getClass(), packageTourListNewPackageTourToAttach.getPId());
-                attachedPackageTourListNew.add(packageTourListNewPackageTourToAttach);
+            Collection<PackageTour> packageTourCollectionOld = persistentTourType.getPackageTourCollection();
+            Collection<PackageTour> packageTourCollectionNew = tourType.getPackageTourCollection();
+            Collection<PackageTour> attachedPackageTourCollectionNew = new ArrayList<PackageTour>();
+            for (PackageTour packageTourCollectionNewPackageTourToAttach : packageTourCollectionNew) {
+                packageTourCollectionNewPackageTourToAttach = em.getReference(packageTourCollectionNewPackageTourToAttach.getClass(), packageTourCollectionNewPackageTourToAttach.getPId());
+                attachedPackageTourCollectionNew.add(packageTourCollectionNewPackageTourToAttach);
             }
-            packageTourListNew = attachedPackageTourListNew;
-            tourType.setPackageTourList(packageTourListNew);
+            packageTourCollectionNew = attachedPackageTourCollectionNew;
+            tourType.setPackageTourCollection(packageTourCollectionNew);
             tourType = em.merge(tourType);
-            for (PackageTour packageTourListOldPackageTour : packageTourListOld) {
-                if (!packageTourListNew.contains(packageTourListOldPackageTour)) {
-                    packageTourListOldPackageTour.setPType(null);
-                    packageTourListOldPackageTour = em.merge(packageTourListOldPackageTour);
+            for (PackageTour packageTourCollectionOldPackageTour : packageTourCollectionOld) {
+                if (!packageTourCollectionNew.contains(packageTourCollectionOldPackageTour)) {
+                    packageTourCollectionOldPackageTour.setPType(null);
+                    packageTourCollectionOldPackageTour = em.merge(packageTourCollectionOldPackageTour);
                 }
             }
-            for (PackageTour packageTourListNewPackageTour : packageTourListNew) {
-                if (!packageTourListOld.contains(packageTourListNewPackageTour)) {
-                    TourType oldPTypeOfPackageTourListNewPackageTour = packageTourListNewPackageTour.getPType();
-                    packageTourListNewPackageTour.setPType(tourType);
-                    packageTourListNewPackageTour = em.merge(packageTourListNewPackageTour);
-                    if (oldPTypeOfPackageTourListNewPackageTour != null && !oldPTypeOfPackageTourListNewPackageTour.equals(tourType)) {
-                        oldPTypeOfPackageTourListNewPackageTour.getPackageTourList().remove(packageTourListNewPackageTour);
-                        oldPTypeOfPackageTourListNewPackageTour = em.merge(oldPTypeOfPackageTourListNewPackageTour);
+            for (PackageTour packageTourCollectionNewPackageTour : packageTourCollectionNew) {
+                if (!packageTourCollectionOld.contains(packageTourCollectionNewPackageTour)) {
+                    TourType oldPTypeOfPackageTourCollectionNewPackageTour = packageTourCollectionNewPackageTour.getPType();
+                    packageTourCollectionNewPackageTour.setPType(tourType);
+                    packageTourCollectionNewPackageTour = em.merge(packageTourCollectionNewPackageTour);
+                    if (oldPTypeOfPackageTourCollectionNewPackageTour != null && !oldPTypeOfPackageTourCollectionNewPackageTour.equals(tourType)) {
+                        oldPTypeOfPackageTourCollectionNewPackageTour.getPackageTourCollection().remove(packageTourCollectionNewPackageTour);
+                        oldPTypeOfPackageTourCollectionNewPackageTour = em.merge(oldPTypeOfPackageTourCollectionNewPackageTour);
                     }
                 }
             }
@@ -132,10 +133,10 @@ public class TourTypeJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The tourType with id " + id + " no longer exists.", enfe);
             }
-            List<PackageTour> packageTourList = tourType.getPackageTourList();
-            for (PackageTour packageTourListPackageTour : packageTourList) {
-                packageTourListPackageTour.setPType(null);
-                packageTourListPackageTour = em.merge(packageTourListPackageTour);
+            Collection<PackageTour> packageTourCollection = tourType.getPackageTourCollection();
+            for (PackageTour packageTourCollectionPackageTour : packageTourCollection) {
+                packageTourCollectionPackageTour.setPType(null);
+                packageTourCollectionPackageTour = em.merge(packageTourCollectionPackageTour);
             }
             em.remove(tourType);
             em.getTransaction().commit();
